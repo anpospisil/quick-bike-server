@@ -72,4 +72,7 @@ router.get("/me", authMiddleware, async (req, res) => {
   res.status(200).send({ ...req.user.dataValues });
 });
 
+
+
+
 module.exports = router;
