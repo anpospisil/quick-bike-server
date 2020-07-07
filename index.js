@@ -1,6 +1,6 @@
 const express = require("express");
-const loggerMiddleWare = require("morgan");
 const corsMiddleWare = require("cors");
+const loggerMiddleWare = require("morgan");
 const { PORT } = require("./config/constants");
 const authRouter = require("./routers/auth");
 const reservationRouter = require("./routers/reservation.js")

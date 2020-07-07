@@ -14,7 +14,7 @@ router.get("/", async (req, res, next) => {
       .then((result) =>
         res.send({ bikes: result })
       );
-    } catch (e) {
+    } catch (e) { 
       next(e);
     }
   });
