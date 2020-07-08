@@ -39,8 +39,8 @@ module.exports = {
         },
         {
           name: "jip",
-          latitude: 52.376535,
-          longitude: 4.884172,
+          latitude: 52.385413,
+          longitude: 4.917933,
           reserved: "false",
           createdAt: new Date(),
           updatedAt: new Date(),

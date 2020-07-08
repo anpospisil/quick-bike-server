@@ -19,5 +19,17 @@ router.get("/", async (req, res, next) => {
     }
   });
 
+  //updates if bike is locked
+  router.patch("/lock", authMiddleware, async (req, res) => {
+    const { locked } = req.body;
+    const bike = await Bikes.findByPk(req.body.bikeId)
+
+   await bike.update({
+      locked: locked
+    });
+  
+    return res.status(200).send({ bike });
+  });
+
 
 module.exports = router;
