@@ -21,7 +21,7 @@ router.post("/login", async (req, res) => {
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).send({
-        message: "User with that email not found or password incorrect"
+        message: "User with that email not found or password incorrect",
       });
     }
 
@@ -39,12 +39,12 @@ router.post("/signup", async (req, res) => {
   if (!email || !password || !name) {
     return res.status(400).send("Please provide an email, password and a name");
   }
-  console.log(email, password, name)
+  console.log(email, password, name);
   try {
     const newUser = await User.create({
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
-      name
+      name,
     });
 
     delete newUser.dataValues["password"]; // don't send back the password hash
@@ -54,26 +54,13 @@ router.post("/signup", async (req, res) => {
     res.status(201).json({ token, ...newUser.dataValues });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
-      
       return res
         .status(400)
         .send({ message: "There is an existing account with this email" });
     }
-    console.log(error.message)
+    console.log(error.message);
     return res.status(400).send({ message: "Something went wrong, sorry" });
   }
 });
-
-// The /me endpoint can be used to:
-// - get the users email & name using only their token
-// - checking if a token is (still) valid
-router.get("/me", authMiddleware, async (req, res) => {
-  // don't send back the password hash
-  delete req.user.dataValues["password"];
-  res.status(200).send({ ...req.user.dataValues });
-});
-
-
-
 
 module.exports = router;
