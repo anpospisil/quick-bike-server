@@ -14,9 +14,21 @@ router.get("/", async (req, res, next) => {
       .then((result) =>
         res.send({ bikes: result })
       );
-    } catch (e) {
+    } catch (e) { 
       next(e);
     }
+  });
+
+  //updates if bike is locked
+  router.patch("/lock", authMiddleware, async (req, res) => {
+    const { locked } = req.body;
+    const bike = await Bikes.findByPk(req.body.bikeId)
+
+   await bike.update({
+      locked: locked
+    });
+  
+    return res.status(200).send({ bike });
   });
 
 
