@@ -7,7 +7,7 @@ const { SALT_ROUNDS } = require("../config/constants");
 
 const router = new Router();
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -39,7 +39,7 @@ router.post("/signup", async (req, res) => {
   if (!email || !password || !name) {
     return res.status(400).send("Please provide an email, password and a name");
   }
-
+  console.log(email, password, name)
   try {
     const newUser = await User.create({
       email,
@@ -54,11 +54,12 @@ router.post("/signup", async (req, res) => {
     res.status(201).json({ token, ...newUser.dataValues });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
+      
       return res
         .status(400)
         .send({ message: "There is an existing account with this email" });
     }
-
+    console.log(error.message)
     return res.status(400).send({ message: "Something went wrong, sorry" });
   }
 });
@@ -71,5 +72,8 @@ router.get("/me", authMiddleware, async (req, res) => {
   delete req.user.dataValues["password"];
   res.status(200).send({ ...req.user.dataValues });
 });
+
+
+
 
 module.exports = router;

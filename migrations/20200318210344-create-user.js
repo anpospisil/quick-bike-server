@@ -21,6 +21,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      imageURL: {
+        type: Sequelize.STRING,
+        defaultValue: "https://p7.hiclipart.com/preview/340/956/944/computer-icons-user-profile-head-ico-download.jpg"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

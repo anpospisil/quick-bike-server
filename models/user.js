@@ -15,12 +15,16 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      imageURL: {
+        type: DataTypes.STRING,
+  
       }
     },
     {}
   );
   user.associate = function(models) {
-    // associations can be defined here
+    user.hasMany(models.reservation)
   };
   return user;
 };
