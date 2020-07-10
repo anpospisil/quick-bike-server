@@ -1,10 +1,10 @@
 {
-  "name": "server-template",
+  "name": "quick-bike-server",
   "version": "1.0.0",
   "description": "Simple express server with sequelize, pg and jwts",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
+    "start": "node index.js",
     "dev": "env DELAY=1000 npx nodemon .",
     "initdev": "npm run migrate && npm run seed",
     "migrate": "npx sequelize-cli db:migrate",
@@ -18,7 +18,7 @@
     "jwt",
     "sequelize"
   ],
-  "author": "Rein Op 't Land",
+  "author": "Andrew Pospisil",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.0",
