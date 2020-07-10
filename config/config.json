@@ -13,10 +13,7 @@
     "operatorsAliases": "0"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "url": "postgres://zhhycwvr:755cuBqLX-psDsuQeRKmqqcZGgOcFe-c@rogue.db.elephantsql.com:5432/zhhycwvr",
     "dialect": "postgres",
     "operatorsAliases": "0"
   }
