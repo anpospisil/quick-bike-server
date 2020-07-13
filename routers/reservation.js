@@ -69,15 +69,15 @@ router.patch("/end/bike", authMiddleware, async (req, res) => {
     order: [["createdAt", "DESC"]],
   });
   const bike = await Bikes.findOne({
-    where: { bikeId: reservation.bikeId },
+    where: { id: reservation.bikeId },
     order: [["createdAt", "DESC"]],
   });
-
+ 
   await bike.update({
     reserved: reserved,
   });
 
-  return res.status(200).send({ bike });
+  return res.status(200)
 });
 
 //Get all reservations for one user
