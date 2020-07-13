@@ -72,11 +72,32 @@ router.patch("/end/bike", authMiddleware, async (req, res) => {
     where: { id: reservation.bikeId },
     order: [["createdAt", "DESC"]],
   });
+ 
   await bike.update({
     reserved: reserved,
   });
 
   return res.status(200)
+});
+
+//Get all reservations for one user
+router.get("/", async (req, res, next) => {
+  try {
+    const user = req.user
+    const limit = Math.min(req.query.limit || 25, 500);
+    const offset = req.query.offset || 0;
+    const reservations = await Reservations.findAll(
+      {
+        where: { userId: user.id },
+        order: [["createdAt", "DESC"]],
+      }
+    )
+    .then((result) =>
+      res.send({ reservations: result })
+    );
+  } catch (e) { 
+    next(e);
+  }
 });
 
 module.exports = router;
