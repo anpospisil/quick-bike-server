@@ -63,13 +63,20 @@ router.patch("/end", authMiddleware, async (req, res) => {
 //updates set reserved to false
 router.patch("/end/bike", authMiddleware, async (req, res) => {
   const { reserved } = req.body;
-  const bike = await Bikes.findByPk(req.body.bikeId);
-
+  const user = req.user
+  const reservation = await Reservations.findOne({
+    where: { userId: user.id },
+    order: [["createdAt", "DESC"]],
+  });
+  const bike = await Bikes.findOne({
+    where: { id: reservation.bikeId },
+    order: [["createdAt", "DESC"]],
+  });
   await bike.update({
     reserved: reserved,
   });
 
-  return res.status(200).send({ bike });
+  return res.status(200)
 });
 
 module.exports = router;
