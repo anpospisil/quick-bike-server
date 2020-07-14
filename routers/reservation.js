@@ -100,4 +100,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+//Get all reservations for one user
+router.get("/", authMiddleware, async (req, res, next) => {
+  try {
+    const user = req.user
+    const reservations = await Reservations.findAll(
+      {
+        where: { userId: user.id },
+        order: [["createdAt", "DESC"]],
+      }
+    )
+    return res.status(200).send({ reservations })
+    
+  } catch (e) { 
+    next(e);
+  }
+});
+
 module.exports = router;
