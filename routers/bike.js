@@ -5,7 +5,7 @@ const Bikes = require("../models").bike
 const Reservations = require("../models").reservation
 const authMiddleware = require("../auth/middleware")
 
-
+//get all bikes
 router.get("/", async (req, res, next) => {
     try {
       const limit = Math.min(req.query.limit || 25, 500);

@@ -28,26 +28,33 @@ router.post("/", authMiddleware, async (req, res) => {
       userId: user.id,
       startTime: startTime,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.log(e);
   }
-  res.status(200).send({ reservation });
+  return res.status(200).send({ message: "Reservation created", reservation });
 });
 
-//updates set reserved to true
+//updates bike, sets reserved to true and generates lockCode
 router.patch("/", authMiddleware, async (req, res) => {
+  try{
   const { reserved } = req.body;
-  const bike = await Bikes.findByPk(req.body.bikeId);
-
+  const lockCode = Math.floor(100000 + Math.random() * 900000)
+  const bike = await Bikes.findByPk(req.body.id);
+  
+  // console.log(lockCode)
   await bike.update({
     reserved: reserved,
+    lockCode: lockCode,
   });
-
+  } catch (e) {
+    console.log(e)
+  }
   return res.status(200).send({ bike });
 });
 
 //updates endTime and cost
 router.patch("/end", authMiddleware, async (req, res) => {
+  try{
   const { endTime, cost } = req.body;
   const user = req.user;
   const reservation = await Reservations.findOne({
@@ -56,12 +63,15 @@ router.patch("/end", authMiddleware, async (req, res) => {
   });
 
   await reservation.update({ endTime, cost });
-
+  } catch(e){
+    console.log(e)
+  }
   return res.status(200).send({ reservation });
 });
 
 //updates set reserved to false
 router.patch("/end/bike", authMiddleware, async (req, res) => {
+  try{
   const { reserved } = req.body;
   const user = req.user
   const reservation = await Reservations.findOne({
@@ -76,28 +86,10 @@ router.patch("/end/bike", authMiddleware, async (req, res) => {
   await bike.update({
     reserved: reserved,
   });
-
+} catch(e){
+  console.log(e)
+}
   return res.status(200)
-});
-
-//Get all reservations for one user
-router.get("/", async (req, res, next) => {
-  try {
-    const user = req.user
-    const limit = Math.min(req.query.limit || 25, 500);
-    const offset = req.query.offset || 0;
-    const reservations = await Reservations.findAll(
-      {
-        where: { userId: user.id },
-        order: [["createdAt", "DESC"]],
-      }
-    )
-    .then((result) =>
-      res.send({ reservations: result })
-    );
-  } catch (e) { 
-    next(e);
-  }
 });
 
 //Get all reservations for one user
