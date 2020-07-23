@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     latitude: DataTypes.FLOAT,
     longitude: DataTypes.FLOAT,
-    reserved: { type: DataTypes.BOOLEAN, defaultValue: 'false' }
+    reserved: { type: DataTypes.BOOLEAN, defaultValue: 'false' },
+    lockCode: DataTypes.INTEGER,
+    locked: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'bike',

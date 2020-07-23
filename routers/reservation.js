@@ -7,7 +7,7 @@ const User = require("../models").user;
 const authMiddleware = require("../auth/middleware");
 
 //creates new reservation with startTime, userId and bikeId
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const user = req.user;
     console.log(req.user);
@@ -23,54 +23,56 @@ router.post("/", authMiddleware, async (req, res) => {
     }
     const { bikeId, startTime } = req.body;
 
-    const reservation = await Reservations.create({
+     const reservation = await Reservations.create({
       bikeId: bikeId,
       userId: user.id,
       startTime: startTime,
     });
+    return res.status(200).send({ message: "Reservation created", reservation });
   } catch (e) {
-    console.log(e);
+    console.log(e)
+    next(e)
   }
-  return res.status(200).send({ message: "Reservation created", reservation });
+  
 });
 
 //updates bike, sets reserved to true and generates lockCode
-router.patch("/", authMiddleware, async (req, res) => {
+router.patch("/", authMiddleware, async (req, res, next) => {
   try{
   const { reserved } = req.body;
   const lockCode = Math.floor(100000 + Math.random() * 900000)
   const bike = await Bikes.findByPk(req.body.id);
   
-  // console.log(lockCode)
+  console.log(lockCode)
   await bike.update({
     reserved: reserved,
     lockCode: lockCode,
   });
-  } catch (e) {
-    console.log(e)
-  }
   return res.status(200).send({ bike });
+  } catch (e) {
+    next(e)
+  }
 });
 
 //updates endTime and cost
-router.patch("/end", authMiddleware, async (req, res) => {
+router.patch("/end", authMiddleware, async (req, res, next) => {
   try{
   const { endTime, cost } = req.body;
   const user = req.user;
-  const reservation = await Reservations.findOne({
+  reservation = await Reservations.findOne({
     where: { userId: user.id },
     order: [["createdAt", "DESC"]],
   });
 
-  await reservation.update({ endTime, cost });
-  } catch(e){
-    console.log(e)
-  }
+  reservation = await reservation.update({ endTime, cost });
   return res.status(200).send({ reservation });
+  } catch(e){
+    next(e)
+  }
 });
 
 //updates set reserved to false
-router.patch("/end/bike", authMiddleware, async (req, res) => {
+router.patch("/end/bike", authMiddleware, async (req, res, next) => {
   try{
   const { reserved } = req.body;
   const user = req.user
@@ -86,23 +88,23 @@ router.patch("/end/bike", authMiddleware, async (req, res) => {
   await bike.update({
     reserved: reserved,
   });
-} catch(e){
-  console.log(e)
-}
   return res.status(200)
+} catch(e){
+  next(e)
+}
 });
 
-//Get all reservations for one user
+//Get current reservation for user
 router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const user = req.user
-    const reservations = await Reservations.findAll(
+    const reservation = await Reservations.findOne(
       {
         where: { userId: user.id },
         order: [["createdAt", "DESC"]],
       }
     )
-    return res.status(200).send({ reservations })
+    return res.status(200).send({ reservation })
     
   } catch (e) { 
     next(e);
