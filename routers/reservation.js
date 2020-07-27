@@ -59,7 +59,7 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
   try{
   const { endTime, cost } = req.body;
   const user = req.user;
-  reservation = await Reservations.findOne({
+  let reservation = await Reservations.findOne({
     where: { userId: user.id },
     order: [["createdAt", "DESC"]],
   });
@@ -76,7 +76,7 @@ router.patch("/end/bike", authMiddleware, async (req, res, next) => {
   try{
   const { reserved } = req.body;
   const user = req.user
-  const reservation = await Reservations.findOne({
+  let reservation = await Reservations.findOne({
     where: { userId: user.id },
     order: [["createdAt", "DESC"]],
   });
