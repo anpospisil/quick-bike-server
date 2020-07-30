@@ -68,4 +68,26 @@ router.get("/me", authMiddleware, async (req, res) => {
   res.status(200).send({ ...req.user.dataValues });
 });
 
+// update profile pic
+router.patch("/profile", authMiddleware, async (req, res) => {
+  try {
+    const { imageURL } = req.body;
+    if (!imageURL) {
+      return res
+        .status(400)
+        .send({ message: "(´◕ ︵ ◕`✿) Please provide an image URL" });
+    }
+    const user = await User.findByPk(req.user.id)
+
+    await user.update({
+      imageURL: imageURL,
+    });    
+    return res.status(200).send({ user })
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({ message: "(´◕ ︵ ◕`✿) Something went wrong, sorry" });
+  }
+});
+
+
 module.exports = router;

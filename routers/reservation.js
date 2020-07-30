@@ -36,6 +36,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
       lockCode: lockCode,
     });
 
+    delete bike.dataValues["lockCode"];
     return res
       .status(200)
       .send({ message: "Reservation created", reservation, bike });
@@ -88,29 +89,6 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
     next(e);
   }
 });
-
-// //updates set reserved to false
-// router.patch("/end/bike", authMiddleware, async (req, res, next) => {
-//   try {
-//     const { reserved } = req.body;
-//     const user = req.user;
-//     let reservation = await Reservations.findOne({
-//       where: { userId: user.id },
-//       order: [["createdAt", "DESC"]],
-//     });
-//     const bike = await Bikes.findOne({
-//       where: { id: reservation.bikeId },
-//       order: [["createdAt", "DESC"]],
-//     });
-
-//     await bike.update({
-//       reserved: reserved,
-//     });
-//     return res.status(200).send({ bike });
-//   } catch (e) {
-//     next(e);
-//   }
-// });
 
 //Get current reservation for user
 router.get("/", authMiddleware, async (req, res, next) => {
