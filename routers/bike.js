@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const router = new Router();
-
 const Bikes = require("../models").bike
 const Reservations = require("../models").reservation
 const authMiddleware = require("../auth/middleware")
@@ -33,6 +32,7 @@ router.get("/", async (req, res, next) => {
       where: { id: reservation.bikeId },
       order: [["createdAt", "DESC"]],
     });
+    console.log(lockCode)
     if (lockCode !== bike.lockCode) {
       return res.status(400).send({
         message: "(´◕ ︵ ◕`✿) Sorry, that was not the right lock code" });
@@ -40,7 +40,6 @@ router.get("/", async (req, res, next) => {
     await bike.update({
       locked: locked,
     });
-  
     return res.status(200).send({ bike });
   } catch(e){
     next(e)

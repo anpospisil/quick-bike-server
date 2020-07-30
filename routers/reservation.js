@@ -88,7 +88,7 @@ router.patch("/end/bike", authMiddleware, async (req, res, next) => {
   await bike.update({
     reserved: reserved,
   });
-  return res.status(200)
+  return res.status(200).send({ bike });
 } catch(e){
   next(e)
 }
