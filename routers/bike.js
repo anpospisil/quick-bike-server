@@ -22,14 +22,22 @@ router.get("/", async (req, res, next) => {
   //updates if bike is locked
   router.patch("/lock", authMiddleware, async (req, res) => {
     const { locked } = req.body;
-    const bike = await Bikes.findByPk(req.body.bikeId)
+    const { user } = req.user
+    const reservation = await Reservations.findOne({
+      where: { userId: user.id },
+      order: [["createdAt", "DESC"]],
+    });
 
-   await bike.update({
-      locked: locked
+    const bike = await Bikes.findOne({
+      where: { id: reservation.bikeId },
+      order: [["createdAt", "DESC"]],
+    });
+   
+    await bike.update({
+      locked: locked,
     });
   
     return res.status(200).send({ bike });
   });
-
 
 module.exports = router;
