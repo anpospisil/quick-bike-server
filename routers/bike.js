@@ -20,7 +20,8 @@ router.get("/", async (req, res, next) => {
   });
 
   //updates if bike is locked
-  router.patch("/lock", authMiddleware, async (req, res) => {
+  router.patch("/lock", authMiddleware, async (req, res, next) => {
+    try{
     const { locked } = req.body;
     const { user } = req.user
     const reservation = await Reservations.findOne({
@@ -38,6 +39,9 @@ router.get("/", async (req, res, next) => {
     });
   
     return res.status(200).send({ bike });
+  } catch(e){
+    next(e)
+  }
   });
 
 module.exports = router;
