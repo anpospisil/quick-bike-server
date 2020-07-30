@@ -19,11 +19,11 @@ router.get("/", async (req, res, next) => {
     }
   });
 
-  //updates if bike is locked
-  router.patch("/lock", authMiddleware, async (req, res, next) => {
+  //updates bike to unlocked
+  router.patch("/unlock", authMiddleware, async (req, res, next) => {
     try{
-    const { locked } = req.body;
-    const { user } = req.user
+    const { locked, lockCode } = req.body;
+    const user = req.user;
     const reservation = await Reservations.findOne({
       where: { userId: user.id },
       order: [["createdAt", "DESC"]],
@@ -33,7 +33,10 @@ router.get("/", async (req, res, next) => {
       where: { id: reservation.bikeId },
       order: [["createdAt", "DESC"]],
     });
-   
+    if (lockCode !== bike.lockCode) {
+      return res.status(400).send({
+        message: "(´◕ ︵ ◕`✿) Sorry, that was not the right lock code" });
+    }
     await bike.update({
       locked: locked,
     });
@@ -41,7 +44,32 @@ router.get("/", async (req, res, next) => {
     return res.status(200).send({ bike });
   } catch(e){
     next(e)
-  }
+  } 
+  });
+
+  //updates bike to locked
+  router.patch("/lock", authMiddleware, async (req, res, next) => {
+    try{
+    const { locked } = req.body;
+    const user = req.user;
+    const reservation = await Reservations.findOne({
+      where: { userId: user.id },
+      order: [["createdAt", "DESC"]],
+    });
+
+    const bike = await Bikes.findOne({
+      where: { id: reservation.bikeId },
+      order: [["createdAt", "DESC"]],
+    });
+
+    await bike.update({
+      locked: locked,
+    });
+  
+    return res.status(200).send({ bike });
+  } catch(e){
+    next(e)
+  } 
   });
 
 module.exports = router;
