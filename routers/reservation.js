@@ -86,15 +86,13 @@ router.get("/", async (req, res, next) => {
     const user = req.user
     const limit = Math.min(req.query.limit || 25, 500);
     const offset = req.query.offset || 0;
-    const reservations = await Reservations.findAll(
+    const reservation = await Reservations.findOne(
       {
         where: { userId: user.id },
         order: [["createdAt", "DESC"]],
       }
     )
-    .then((result) =>
-      res.send({ reservations: result })
-    );
+      return res.status(200).send({ reservation })
   } catch (e) { 
     next(e);
   }
