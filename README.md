@@ -5,7 +5,7 @@
 This main idea of this project is to create a web-based app for short-term bike rental. Users can create an account, reserve a bike using a map interface and lock/unlock their bike in-app.
 
 ## UML
-![UML](github.com/anpospisil/quick-bike-client/blob/master/attachments/qb-uml.png)
+![UML](https://github.com/anpospisil/quick-bike-client/blob/development/attachments/qb-uml.png)
 
 ## How to Install this?
 
