@@ -36,7 +36,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
       lockCode: lockCode,
     });
 
-    delete bike.dataValues["lockCode"];
+    // delete bike.dataValues["lockCode"];
     return res
       .status(200)
       .send({ message: "Reservation created", reservation, bike });
@@ -67,15 +67,33 @@ router.post("/", authMiddleware, async (req, res, next) => {
 //updates endTime and cost & updates bike to not reserved
 router.patch("/end", authMiddleware, async (req, res, next) => {
   try {
-    const { endTime, cost, reserved } = req.body;
+    const { reserved } = req.body;
     const user = req.user;
+    const endTime = new Date()
     let reservation = await Reservations.findOne({
       where: { userId: user.id },
       order: [["createdAt", "DESC"]],
     });
 
+    const startTimestamp = reservation.startTime.getTime()
+    console.log("endtime", endTime.getTime())
+    const endTimestamp = endTime.getTime()
+
+    function timeDiff(startTime, endTime ){
+      let diffInMilliSeconds = Math.abs(startTime - endTime) / 1000;
+      const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
+      diffInMilliSeconds -= hours * 3600;
+      console.log(hours)
+      return hours
+    }
+
+    const totalHours = timeDiff(startTimestamp, endTimestamp)
+
+    const cost = totalHours <= 12 ? 2 : 3;
+
     reservation = await reservation.update({ endTime, cost });
 
+    // update bike to reserved 
     const bike = await Bikes.findOne({
       where: { id: reservation.bikeId },
       order: [["createdAt", "DESC"]],
