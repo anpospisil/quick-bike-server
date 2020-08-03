@@ -5,6 +5,7 @@ const Bikes = require("../models").bike;
 const Reservations = require("../models").reservation;
 const User = require("../models").user;
 const authMiddleware = require("../auth/middleware");
+const nodemailer = require('nodemailer');
 
 //creates new reservation with startTime, userId and bikeId & updates bike to reserved
 router.post("/", authMiddleware, async (req, res, next) => {
@@ -21,7 +22,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
     if (bike === null) {
       return res.status(404).send({ message: "bike is not found!" });
     }
-    const { bikeId, startTime, reserved } = req.body;
+    const { bikeId, startTime, reserved, name } = req.body;
 
     const reservation = await Reservations.create({
       bikeId: bikeId,
@@ -35,6 +36,30 @@ router.post("/", authMiddleware, async (req, res, next) => {
       reserved: reserved,
       lockCode: lockCode,
     });
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+          user: 'waylon.yost@ethereal.email',
+          pass: 'eU6F6GhwSZ83mTx1Sx'
+      }
+  });
+  const mailOptions = {
+      from: `waylon.yost@ethereal.email`,
+      to: user.email,
+      subject: `Reservation Made - Quick Bike`,
+      text: `Good Day, ${user.name}! Your reservation was made! Pick up ${name} at the location you selected.
+      Here is your lockcode: ${lockCode}`,
+      replyTo: `waylon.yost@ethereal.email`
+    }
+    transporter.sendMail(mailOptions, function(err, res) {
+      if (err) {
+        console.error('there was an error: ', err);
+      } else {
+        console.log('here is the res: ', res)
+      }
+  })
 
     // delete bike.dataValues["lockCode"];
     return res
@@ -75,6 +100,7 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
       order: [["createdAt", "DESC"]],
     });
 
+    //defines cost depedant on start/end time
     const startTimestamp = reservation.startTime.getTime()
     console.log("endtime", endTime.getTime())
     const endTimestamp = endTime.getTime()
@@ -92,6 +118,30 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
     const cost = totalHours <= 12 ? 2 : 3;
 
     reservation = await reservation.update({ endTime, cost });
+
+    //sends end reservation email
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+          user: 'waylon.yost@ethereal.email',
+          pass: 'eU6F6GhwSZ83mTx1Sx'
+      }
+  });
+  const mailOptions = {
+      from: `waylon.yost@ethereal.email`,
+      to: user.email,
+      subject: `Reservation Ended - Quick Bike`,
+      text: `Hey there, ${user.name}! Your reservation has ended. Thank you for using Quick Bike!`,
+      replyTo: `waylon.yost@ethereal.email`
+    }
+    transporter.sendMail(mailOptions, function(err, res) {
+      if (err) {
+        console.error('there was an error: ', err);
+      } else {
+        console.log('here is the res: ', res)
+      }
+  })
 
     // update bike to reserved 
     const bike = await Bikes.findOne({
