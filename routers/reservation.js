@@ -38,20 +38,21 @@ router.post("/", authMiddleware, async (req, res, next) => {
     });
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      service: 'hotmail',
+      // host: 'smtp.ethereal.email',
+      // port: 587,
       auth: {
-          user: 'waylon.yost@ethereal.email',
-          pass: 'eU6F6GhwSZ83mTx1Sx'
+          user: 'quickbike2020@outlook.com',
+          pass: 'quickbike123'
       }
   });
   const mailOptions = {
-      from: `waylon.yost@ethereal.email`,
+      from: `quickbike2020@outlook.com`,
       to: user.email,
       subject: `Reservation Made - Quick Bike`,
       text: `Good Day, ${user.name}! Your reservation was made! Pick up ${name} at the location you selected.
       Here is your lockcode: ${lockCode}`,
-      replyTo: `waylon.yost@ethereal.email`
+      replyTo: `quickbike2020@outlook.com`
     }
     transporter.sendMail(mailOptions, function(err, res) {
       if (err) {
@@ -121,19 +122,20 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
 
     //sends end reservation email
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      service: 'hotmail',
+      // host: 'smtp.ethereal.email',
+      // port: 587,
       auth: {
-          user: 'waylon.yost@ethereal.email',
-          pass: 'eU6F6GhwSZ83mTx1Sx'
+          user: 'quickbike2020@outlook.com',
+          pass: 'quickbike123'
       }
   });
   const mailOptions = {
-      from: `waylon.yost@ethereal.email`,
+      from: `quickbike2020@outlook.com`,
       to: user.email,
       subject: `Reservation Ended - Quick Bike`,
       text: `Hey there, ${user.name}! Your reservation has ended. Thank you for using Quick Bike!`,
-      replyTo: `waylon.yost@ethereal.email`
+      replyTo: `quickbike2020@outlook.com`
     }
     transporter.sendMail(mailOptions, function(err, res) {
       if (err) {
