@@ -37,15 +37,14 @@ router.post("/", authMiddleware, async (req, res, next) => {
       lockCode: lockCode,
     });
 
-    const transporter = nodemailer.createTransport({
-      service: 'hotmail',
-      // host: 'smtp.ethereal.email',
-      // port: 587,
-      auth: {
-          user: 'quickbike2020@outlook.com',
-          pass: 'quickbike123'
-      }
-  });
+   const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
   const mailOptions = {
       from: `quickbike2020@outlook.com`,
       to: user.email,
