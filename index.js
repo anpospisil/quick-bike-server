@@ -5,6 +5,7 @@ const { PORT } = require("./config/constants");
 const authRouter = require("./routers/auth");
 const reservationRouter = require("./routers/reservation.js");
 const bikeRouter = require("./routers/bike");
+const healthRouter = require("./routers/health")
 const authMiddleWare = require("./auth/middleware");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(loggerMiddleWare("dev"));
 const bodyParserMiddleWare = express.json();
 app.use(bodyParserMiddleWare);
 app.use(corsMiddleWare());
+
 
 if (process.env.DELAY) {
   app.use((req, res, next) => {
@@ -27,7 +29,7 @@ if (process.env.DELAY) {
 app.use("/", authRouter);
 app.use("/reservation", reservationRouter);
 app.use("/bike", bikeRouter);
-
+app.use("/health", healthRouter);
 // Listen for connections on specified port (default is port 4000)
 
 app.listen(PORT, () => {
