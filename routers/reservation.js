@@ -121,14 +121,13 @@ router.patch("/end", authMiddleware, async (req, res, next) => {
 
     //sends end reservation email
     const transporter = nodemailer.createTransport({
-      service: 'hotmail',
-      // host: 'smtp.ethereal.email',
-      // port: 587,
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
       auth: {
-          user: 'quickbike2020@outlook.com',
-          pass: 'quickbike123'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
-  });
+    });
   const mailOptions = {
       from: `quickbike2020@outlook.com`,
       to: user.email,
