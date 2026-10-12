@@ -42,7 +42,7 @@ Routes that change state use `authMiddleware`.
 
 - `DATABASE_URL`: Postgres connection string (development and production)
 - `JWT_SECRET`: signing key for tokens
-- `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`: reservation start and end emails
+- `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`: reservation start and end emails. These point to a throwaway test account (quickbike2020@outlook.com) used for the demo; it isn't a monitored inbox, and emails aren't a guaranteed part of the user flow.
 - `PORT`: defaults to 4000
 - `DELAY`: optional artificial latency in ms, used by `npm run dev`
 
